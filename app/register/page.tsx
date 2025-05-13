@@ -1,36 +1,49 @@
-'use client';
-
-import React from "react";
-
-export default function RegisterPage() {
+export default function Register() {
   return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold">Register</h1>
-      <p className="mt-2">Create an account to access the platform.</p>
-
-      <form className="mt-4 space-y-4">
-        <input
-          type="text"
-          placeholder="Full Name"
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-        <input
-          type="email"
-          placeholder="Email Address"
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 border border-gray-300 rounded"
-        />
-        <button
-          type="submit"
-          className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Register
-        </button>
-      </form>
-    </main>
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+        <h1 className="text-2xl font-bold text-purple-600 mb-6">Register Your School</h1>
+        <p className="text-gray-600 mb-6">
+          Complete this form to register your nursery school with EDU GROW SA.
+        </p>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              School Name
+            </label>
+            <input
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="Enter school name"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="Enter email address"
+            />
+          </div>
+          <div className="pt-4">
+            <button
+              className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+            >
+              Continue Registration
+            </button>
+          </div>
+          <div className="text-center">
+            <a 
+              href="/"
+              className="text-sm text-purple-600 hover:underline"
+            >
+              Back to Home
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
