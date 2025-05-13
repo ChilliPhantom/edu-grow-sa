@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGrow SA - Learning Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-button {
+            @apply px-3 py-2 sm:px-4 font-medium text-xs sm:text-sm rounded-md transition-colors duration-150 whitespace-nowrap;
+        }
+        .tab-button.active {
+            @apply bg-blue-600 text-white;
+        }
+        .tab-button:not(.active) {
+            @apply bg-gray-200 text-gray-700 hover:bg-gray-300;
+        }
+        .content-card {
+            @apply bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6;
+        }
+        .language-selector button, .nav-selector select {
+            @apply px-3 py-1.5 text-sm font-medium rounded-md shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500;
+        }
+        .language-selector button.active-lang {
+            @apply bg-green-600 text-white;
+        }
+        .language-selector button:not(.active-lang) {
+            @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+        }
+        .nav-selector select {
+            @apply bg-white border border-gray-300 text-gray-800;
+        }
+        /* Ensure video placeholder is responsive */
+        .aspect-w-16 { position: relative; padding-bottom: 56.25%; /* 16:9 aspect ratio */ }
+        .aspect-h-9 { /* not needed if using padding-bottom trick */ }
+        .aspect-w-16 > div, .aspect-w-16 > iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#" class="text-2xl font-bold text-blue-600">EduGrow SA</a>
+                </div>
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <span class="text-xs sm:text-sm text-gray-600 hidden md:block">Sunshine Nursery School</span>
+                    <a href="#" class="text-xs sm:text-sm font-medium text-gray-700 hover:text-blue-600">Profile</a>
+                    <a href="#" class="text-xs sm:text-sm font-medium text-red-600 hover:text-red-800">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <div class="mb-6 p-4 bg-white rounded-lg shadow flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
+            <div class="nav-selectors flex flex-col sm:flex-row gap-2 sm:gap-4 items-center w-full md:w-auto">
+                <div class="w-full sm:w-auto">
+                    <label for="monthSelector" class="block text-sm font-medium text-gray-700 mb-1">Month:</label>
+                    <select id="monthSelector" class="w-full sm:w-auto nav-selector"></select>
+                </div>
+                <div class="w-full sm:w-auto">
+                    <label for="weekSelector" class="block text-sm font-medium text-gray-700 mb-1">Week:</label>
+                    <select id="weekSelector" class="w-full sm:w-auto nav-selector"></select>
+                </div>
+            </div>
+            <div class="language-selector flex space-x-2 self-center md:self-end" id="languageSelectorContainer">
+                <button data-lang="en" class="active-lang">English</button>
+                <button data-lang="af">Afrikaans</button>
+                </div>
+        </div>
+        
+        <div class="mb-4 p-4 bg-blue-50 rounded-lg shadow">
+            <p class="text-sm text-gray-600">Age Group: 3-4 Years (Content adaptable)</p>
+            <p id="currentSelectionDisplay" class="text-md font-semibold text-blue-700"></p>
+        </div>
+
+
+        <h1 id="weeklyThemeTitle" class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
+            </h1>
+
+        <div class="mb-6 flex flex-wrap space-x-1 sm:space-x-2 border-b border-gray-300" id="tabContainer">
+            <button class="tab-button active" data-tab="focus">Lesson Focus</button>
+            <button class="tab-button" data-tab="activities">Activities</button>
+            <button class="tab-button" data-tab="resources">Resources</button>
+            <button class="tab-button" data-tab="story">Story Time</button>
+        </div>
+
+        <div id="tabContent">
+            <div id="focusContent" class="content-card tab-pane">
+                <h2 class="text-xl sm:text-2xl font-semibold text-blue-700 mb-3" data-lang-key="lessonFocusTitle"></h2>
+                <p data-lang-key="lessonFocusP1" class="text-sm sm:text-base"></p>
+                <ul class="list-disc list-inside mt-3 space-y-1 text-gray-700 text-sm sm:text-base" data-lang-key="lessonFocusObjectives">
+                </ul>
+            </div>
+
+            <div id="activitiesContent" class="content-card tab-pane hidden">
+                <h2 class="text-xl sm:text-2xl font-semibold text-blue-700 mb-3" data-lang-key="activitiesTitle"></h2>
+                <div class="space-y-4" data-lang-key="activitiesList">
+                    </div>
+            </div>
+
+            <div id="resourcesContent" class="content-card tab-pane hidden">
+                <h2 class="text-xl sm:text-2xl font-semibold text-blue-700 mb-3" data-lang-key="resourcesTitle"></h2>
+                <ul class="space-y-3" data-lang-key="resourcesList">
+                    </ul>
+            </div>
+
+            <div id="storyTimeContent" class="content-card tab-pane hidden">
+                <h2 class="text-xl sm:text-2xl font-semibold text-blue-700 mb-3" data-lang-key="storyTimeTitle"></h2>
+                <h3 class="text-lg sm:text-xl font-medium text-gray-800 mb-2" data-lang-key="storyTitle"></h3>
+                <p class="text-gray-700 text-sm sm:text-base" data-lang-key="storyTeaser"></p>
+                <a href="#" class="text-blue-600 hover:underline mt-3 inline-block text-sm sm:text-base" data-lang-key="readFullStory" target="_blank" rel="noopener noreferrer"></a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-12 py-8 text-center">
+        <p>&copy; <span id="currentYear"></span> EduGrow SA. All rights reserved.</p>
+        <p class="text-sm text-gray-400" data-lang-key="footerSlogan">Empowering Early Childhood Development in South Africa.</p>
+    </footer>
+
+    <script>
+        // --- CONTENT DATA ---
+        // This object holds all the educational content.
+        // In a real application, this would likely come from a database/CMS.
+        const siteContent = {
+            month1: {
+                title: { en: "Month 1: All About Me & My Senses", af: "Maand 1: Alles Oor My & My Sintue" },
+                weeks: {
+                    week1: {
+                        en: {
+                            weeklyThemeTitle: "Wonderful Me!",
+                            lessonFocusTitle: "Lesson Focus: Celebrating Uniqueness",
+                            lessonFocusP1: "This week, children will learn about themselves, their bodies, and what makes them unique and special. We will encourage self-expression and positive self-image.",
+                            lessonFocusObjectives: `<li>Identify and name main body parts.</li>
+                                                <li>Express likes and dislikes.</li>
+                                                <li>Understand that everyone is unique and special.</li>
+                                                <li>Practice listening skills during story time.</li>`,
+                            activitiesTitle: "Activities",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. All About Me Poster</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Provide large paper, crayons, and magazine cutouts. Children create a poster about themselves, drawing their face, body, and things they like. Encourage them to share their poster with the group.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. "My Body" Song & Actions</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Teach a simple song about body parts (e.g., "Head, Shoulders, Knees and Toes"). Perform actions together. This helps with body part recognition and gross motor skills.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. Mirror, Mirror</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Provide safe mirrors. Let children look at their reflections, make faces, and describe what they see. Discuss different facial expressions.</p>
+                                            </div>`,
+                            resourcesTitle: "Resources",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Printable: Body Outline Template (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-audio mr-2 text-purple-500"></i> Audio: "Head, Shoulders, Knees & Toes" Song (MP3)</a></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-palette mr-2 text-yellow-500"></i> Materials: Large paper, crayons, child-safe scissors, glue, old magazines.</span></li>`,
+                            storyTimeTitle: "Story Time",
+                            storyTitle: "The Boy with a Drum",
+                            storyTeaser: "A little boy discovers his unique talent and how it brings joy to others. This story encourages children to embrace what makes them special. (Teacher to narrate or find an adaptation).",
+                            readFullStory: "Find 'The Boy with a Drum' story resources",
+                            footerSlogan: "Empowering Early Childhood Development in South Africa."
+                        },
+                        af: {
+                            weeklyThemeTitle: "Wonderlike Ek!",
+                            lessonFocusTitle: "Leerfokus: Viering van Uniekheid",
+                            lessonFocusP1: "Hierdie week leer kinders oor hulself, hul liggame, en wat hulle uniek en spesiaal maak. Ons sal selfuitdrukking en 'n positiewe selfbeeld aanmoedig.",
+                            lessonFocusObjectives: `<li>Identifiseer en benoem hoofliggaamsdele.</li>
+                                                <li>Druk voorkeure en afkeure uit.</li>
+                                                <li>Verstaan dat almal uniek en spesiaal is.</li>
+                                                <li>Oefen luistervaardighede tydens storietyd.</li>`,
+                            activitiesTitle: "Aktiwiteite",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. Alles Oor My Plakkaat</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Voorsien groot papier, kryte en tydskrifuitknipsels. Kinders skep 'n plakkaat oor hulself, teken hul gesig, liggaam en dinge waarvan hulle hou. Moedig hulle aan om hul plakkaat met die groep te deel.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. "My Liggaam" Liedjie & Aksies</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Leer 'n eenvoudige liedjie oor liggaamsdele (bv. "Kop, Skouers, Knieë en Tone"). Doen aksies saam. Dit help met liggaamsdeelherkenning en grootmotoriese vaardighede.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. Spieëltjie, Spieëltjie</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Voorsien veilige spieëls. Laat kinders na hul weerkaatsings kyk, gesigte trek en beskryf wat hulle sien. Bespreek verskillende gesigsuitdrukkings.</p>
+                                            </div>`,
+                            resourcesTitle: "Hulpbronne",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Drukbaar: Liggaamskontoer Sjabloon (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-audio mr-2 text-purple-500"></i> Oudio: "Kop, Skouers, Knieë & Tone" Liedjie (MP3)</a></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-palette mr-2 text-yellow-500"></i> Materiale: Groot papier, kryte, kinderveilige skêre, gom, ou tydskrifte.</span></li>`,
+                            storyTimeTitle: "Storietyd",
+                            storyTitle: "Die Seun met 'n Drom",
+                            storyTeaser: "'n Klein seuntjie ontdek sy unieke talent en hoe dit vreugde aan ander bring. Hierdie storie moedig kinders aan om dit wat hulle spesiaal maak, te omhels. (Onderwyser vertel of vind 'n aanpassing).",
+                            readFullStory: "Vind 'Die Seun met 'n Drom' storiehulpbronne",
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika."
+                        }
+                    },
+                    week2: {
+                        en: {
+                            weeklyThemeTitle: "My Amazing Senses!",
+                            lessonFocusTitle: "Lesson Focus: Exploring the Five Senses",
+                            lessonFocusP1: "Children will explore the world using their five senses: sight, sound, smell, taste, and touch. Activities will be hands-on to make learning about senses fun and memorable.",
+                            lessonFocusObjectives: `<li>Identify and name the five senses.</li>
+                                                <li>Describe objects using sensory words (e.g., soft, loud, sweet).</li>
+                                                <li>Participate in sensory exploration activities.</li>
+                                                <li>Develop observation and descriptive language skills.</li>`,
+                            activitiesTitle: "Activities",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. Sensory Bins</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Create bins with different textures: one with dry pasta/rice, one with water and toys, one with soft fabrics. Let children explore using their sense of touch.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. Sound Guessing Game</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Use a screen or have children close their eyes. Make different sounds (clapping, bell, crinkling paper). Children guess what made the sound.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. Taste Test Adventure (with caution)</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Offer small, safe samples of sweet (fruit), sour (lemon slice - diluted), and salty (pretzel) foods. Discuss the tastes. *Ensure no allergies.*</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">4. "I Spy" with My Little Eye</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Play the classic "I Spy" game to encourage visual observation and descriptive words (e.g., "I spy something red and round").</p>
+                                            </div>`,
+                            resourcesTitle: "Resources",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Printable: Five Senses Chart (PDF)</a></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-box-open mr-2 text-yellow-500"></i> Materials: Bins, pasta, rice, water toys, fabrics, bell, items for sound game, safe food items for tasting.</span></li>`,
+                            storyTimeTitle: "Story Time",
+                            storyTitle: "Goldilocks and the Three Bears",
+                            storyTeaser: "This classic story is rich with sensory details – porridge that's too hot/cold, chairs too hard/soft, beds too big/small. Focus on these descriptions. (Teacher to narrate).",
+                            readFullStory: "Find 'Goldilocks and the Three Bears' story versions",
+                            footerSlogan: "Empowering Early Childhood Development in South Africa."
+                        },
+                        af: {
+                            weeklyThemeTitle: "My Wonderlike Sintue!",
+                            lessonFocusTitle: "Leerfokus: Verkenning van die Vyf Sintue",
+                            lessonFocusP1: "Kinders sal die wêreld verken deur hul vyf sintuie te gebruik: sig, gehoor, reuk, smaak en tas. Aktiwiteite sal prakties wees om leer oor sintuie pret en onvergeetlik te maak.",
+                            lessonFocusObjectives: `<li>Identifiseer en benoem die vyf sintuie.</li>
+                                                <li>Beskryf voorwerpe deur sintuiglike woorde te gebruik (bv. sag, hard, soet).</li>
+                                                <li>Neem deel aan sintuiglike verkenningsaktiwiteite.</li>
+                                                <li>Ontwikkel waarnemings- en beskrywende taalvaardighede.</li>`,
+                            activitiesTitle: "Aktiwiteite",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. Sensoriese Bakke</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Skep bakke met verskillende teksture: een met droë pasta/rys, een met water en speelgoed, een met sagte stowwe. Laat kinders verken deur hul tassin te gebruik.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. Klank Raai-Raai Speletjie</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Gebruik 'n skerm of laat kinders hul oë toemaak. Maak verskillende geluide (handeklap, klokkie, papier wat kreukel). Kinders raai wat die geluid gemaak het.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. Smaaktoets Avontuur (met omsigtigheid)</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Bied klein, veilige monsters van soet (vrugte), suur (suurlemoenskyfie - verdun), en sout (soutbeskuitjie) kosse aan. Bespreek die smake. *Maak seker daar is geen allergieë nie.*</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">4. "Ek Sien Met My Kleine Ogie"</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Speel die klassieke "Ek Sien" speletjie om visuele waarneming en beskrywende woorde aan te moedig (bv. "Ek sien iets rooi en rond").</p>
+                                            </div>`,
+                            resourcesTitle: "Hulpbronne",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Drukbaar: Vyf Sintue Kaart (PDF)</a></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-box-open mr-2 text-yellow-500"></i> Materiale: Bakke, pasta, rys, waterspeelgoed, stowwe, klokkie, items vir klankspeletjie, veilige kositems vir proe.</span></li>`,
+                            storyTimeTitle: "Storietyd",
+                            storyTitle: "Goue Lokkies en die Drie Bere",
+                            storyTeaser: "Hierdie klassieke storie is ryk aan sintuiglike besonderhede – pap wat te warm/koud is, stoele te hard/sag, beddens te groot/klein. Fokus op hierdie beskrywings. (Onderwyser vertel).",
+                            readFullStory: "Vind 'Goue Lokkies en die Drie Bere' storie weergawes",
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika."
+                        }
+                    },
+                    // Weeks 3 & 4 for Month 1 - Placeholder content for brevity
+                    week3: { 
+                        en: { 
+                            weeklyThemeTitle: "My Feelings", 
+                            lessonFocusTitle: "Understanding Emotions", 
+                            lessonFocusP1: "This week is about recognizing and naming different feelings, and learning healthy ways to express them.", 
+                            lessonFocusObjectives: "<li>Identify basic emotions (happy, sad, angry, scared).</li><li>Talk about what makes them feel certain emotions.</li><li>Learn simple coping strategies for big feelings.</li>", 
+                            activitiesTitle: "Activities", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Feelings Faces Chart</h3><p class="text-sm sm:text-base text-gray-700">Create or use a chart with different feeling faces. Discuss each feeling.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Emotion Charades</h3><p class="text-sm sm:text-base text-gray-700">Children act out an emotion for others to guess.</p></div>`, 
+                            resourcesTitle: "Resources", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Printable: Feelings Flashcards (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-palette mr-2 text-yellow-500'></i> Materials: Paper plates for masks, markers.</span></li>", 
+                            storyTimeTitle: "Story Time", 
+                            storyTitle: "The Grumpy Monkey by Suzanne Lang", 
+                            storyTeaser: "Jim Panzee wakes up in a bad mood, but his friends help him understand it's okay to feel grumpy.", 
+                            readFullStory: "Find 'The Grumpy Monkey'", 
+                            footerSlogan: "Empowering Early Childhood Development in South Africa." 
+                        }, 
+                        af: { 
+                            weeklyThemeTitle: "My Gevoelens", 
+                            lessonFocusTitle: "Verstaan Emosies", 
+                            lessonFocusP1: "Hierdie week gaan oor die herkenning en benoeming van verskillende gevoelens, en om gesonde maniere te leer om dit uit te druk.", 
+                            lessonFocusObjectives: "<li>Identifiseer basiese emosies (bly, hartseer, kwaad, bang).</li><li>Praat oor wat hulle sekere emosies laat voel.</li><li>Leer eenvoudige hanteringstrategieë vir groot gevoelens.</li>", 
+                            activitiesTitle: "Aktiwiteite", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Gevoelsgesigte Kaart</h3><p class="text-sm sm:text-base text-gray-700">Skep of gebruik 'n kaart met verskillende gevoelsgesigte. Bespreek elke gevoel.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Emosie Charades</h3><p class="text-sm sm:text-base text-gray-700">Kinders beeld 'n emosie uit vir ander om te raai.</p></div>`, 
+                            resourcesTitle: "Hulpbronne", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Drukbaar: Gevoelsflitskaarte (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-palette mr-2 text-yellow-500'></i> Materiale: Papierborde vir maskers, merkers.</span></li>", 
+                            storyTimeTitle: "Storietyd", 
+                            storyTitle: "Die Knopstert Affie deur Suzanne Lang", 
+                            storyTeaser: "Jim Panzee word in 'n slegte bui wakker, maar sy vriende help hom verstaan dis okay om knorrig te voel.", 
+                            readFullStory: "Vind 'Die Knopstert Affie'", 
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika." 
+                        } 
+                    },
+                    week4: { 
+                        en: { 
+                            weeklyThemeTitle: "My Family & My Home", 
+                            lessonFocusTitle: "Love and Belonging", 
+                            lessonFocusP1: "Exploring the concepts of family, home, and the people who care for us. Focus on diversity in families.", 
+                            lessonFocusObjectives: "<li>Talk about their family members.</li><li>Describe their home.</li><li>Understand that families come in different forms and all are special.</li>", 
+                            activitiesTitle: "Activities", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Family Portraits</h3><p class="text-sm sm:text-base text-gray-700">Children draw pictures of their families.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Build a House</h3><p class="text-sm sm:text-base text-gray-700">Use blocks or recycled materials to build houses.</p></div>`, 
+                            resourcesTitle: "Resources", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Printable: House templates (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-home mr-2 text-yellow-500'></i> Materials: Drawing paper, crayons, blocks, recycled boxes.</span></li>", 
+                            storyTimeTitle: "Story Time", 
+                            storyTitle: "A House for Hermit Crab by Eric Carle", 
+                            storyTeaser: "Hermit Crab needs a new home and finds help from new friends. Teaches about change and community.", 
+                            readFullStory: "Find 'A House for Hermit Crab'", 
+                            footerSlogan: "Empowering Early Childhood Development in South Africa." 
+                        }, 
+                        af: { 
+                            weeklyThemeTitle: "My Familie & My Huis", 
+                            lessonFocusTitle: "Liefde en Samehorigheid", 
+                            lessonFocusP1: "Verkenning van die konsepte van familie, huis, en die mense wat vir ons omgee. Fokus op diversiteit in families.", 
+                            lessonFocusObjectives: "<li>Praat oor hul familielede.</li><li>Beskryf hul huis.</li><li>Verstaan dat families in verskillende vorme kom en almal spesiaal is.</li>", 
+                            activitiesTitle: "Aktiwiteite", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Familieportrette</h3><p class="text-sm sm:text-base text-gray-700">Kinders teken prente van hul families.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Bou 'n Huis</h3><p class="text-sm sm:text-base text-gray-700">Gebruik blokkies of herwinde materiaal om huise te bou.</p></div>`, 
+                            resourcesTitle: "Hulpbronne", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Drukbaar: Huis sjablone (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-home mr-2 text-yellow-500'></i> Materiale: Tekenpapier, kryte, blokkies, herwinde bokse.</span></li>", 
+                            storyTimeTitle: "Storietyd", 
+                            storyTitle: "'n Huis vir Hermit Krap deur Eric Carle", 
+                            storyTeaser: "Hermit Krap het 'n nuwe huis nodig en kry hulp van nuwe vriende. Leer oor verandering en gemeenskap.", 
+                            readFullStory: "Vind ''n Huis vir Hermit Krap'", 
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika." 
+                        } 
+                    }
+                }
+            },
+            month2: {
+                title: { en: "Month 2: Exploring Our World", af: "Maand 2: Verken Ons Wêreld" },
+                weeks: {
+                    week1: {
+                        en: {
+                            weeklyThemeTitle: "Our Community Helpers",
+                            lessonFocusTitle: "People Who Help Us",
+                            lessonFocusP1: "This week introduces children to various community helpers (like firefighters, doctors, teachers, police officers, and construction workers) and the important roles they play in our lives. We'll focus on what they do and how they help keep our community safe and functioning.",
+                            lessonFocusObjectives: `<li>Identify at least three different community helpers.</li>
+                                                <li>Describe one thing each identified helper does.</li>
+                                                <li>Develop respect and appreciation for community helpers.</li>
+                                                <li>Practice imaginative play through role-playing.</li>`,
+                            activitiesTitle: "Activities",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. Community Helper Dress-Up & Role Play</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Set up a dress-up corner with simple props representing different community helpers (e.g., toy stethoscope for a doctor, a construction hat, a teacher's pointer). Encourage children to choose a helper, dress up, and act out what that helper does.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. "What's My Job?" Guessing Game</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Teacher describes a community helper's job or shows a tool they use (e.g., "I help people when they are sick," or show a toy fire hose). Children guess the helper. Discuss their answers.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. Thank You Cards for Community Helpers</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Children can draw pictures or help decorate simple thank you cards. Discuss who they could give these cards to (even if it's just pretend play or sending to a local fire station if appropriate and planned).</p>
+                                            </div>`,
+                            resourcesTitle: "Resources",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Printable: Community Helper Flashcards (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Printable: Simple Thank You Card Template (PDF)</a></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-user-friends mr-2 text-yellow-500"></i> Materials: Dress-up clothes (hats, vests), toy tools (stethoscope, hose, pointer), paper, crayons, decorating supplies.</span></li>`,
+                            storyTimeTitle: "Story Time",
+                            storyTitle: "Whose Hands Are These? A Community Helper Guessing Book by Miranda Paul",
+                            storyTeaser: "A book that celebrates the work of different hands in the community through engaging riddles. Perfect for guessing games and discussion.",
+                            readFullStory: "Find 'Whose Hands Are These?'",
+                            footerSlogan: "Empowering Early Childhood Development in South Africa."
+                        },
+                        af: {
+                            weeklyThemeTitle: "Ons Gemeenskapshelpers",
+                            lessonFocusTitle: "Mense Wat Ons Help",
+                            lessonFocusP1: "Hierdie week stel kinders bekend aan verskeie gemeenskapshelpers (soos brandweermanne, dokters, onderwysers, polisiebeamptes en konstruksiewerkers) en die belangrike rolle wat hulle in ons lewens speel. Ons sal fokus op wat hulle doen en hoe hulle help om ons gemeenskap veilig en funksionerend te hou.",
+                            lessonFocusObjectives: `<li>Identifiseer ten minste drie verskillende gemeenskapshelpers.</li>
+                                                <li>Beskryf een ding wat elke geïdentifiseerde helper doen.</li>
+                                                <li>Ontwikkel respek en waardering vir gemeenskapshelpers.</li>
+                                                <li>Oefen verbeeldingryke spel deur rolspel.</li>`,
+                            activitiesTitle: "Aktiwiteite",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. Gemeenskapshelper Aantrek & Rolspel</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Rig 'n aantrekhoekie in met eenvoudige rekwisiete wat verskillende gemeenskapshelpers verteenwoordig (bv. speelgoedstetoskoop vir 'n dokter, 'n konstruksiehoed, 'n onderwyser se wysstok). Moedig kinders aan om 'n helper te kies, aan te trek en uit te beeld wat daardie helper doen.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. "Wat's My Werk?" Raaispeletjie</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Onderwyser beskryf 'n gemeenskapshelper se werk of wys 'n stuk gereedskap wat hulle gebruik (bv. "Ek help mense as hulle siek is," of wys 'n speelgoedbrandslang). Kinders raai die helper. Bespreek hul antwoorde.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. Dankiekaartjies vir Gemeenskapshelpers</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Kinders kan prentjies teken of help om eenvoudige dankiekaartjies te versier. Bespreek aan wie hulle hierdie kaartjies kan gee (al is dit net voorgee-spel of om na 'n plaaslike brandweerstasie te stuur indien gepas en beplan).</p>
+                                            </div>`,
+                            resourcesTitle: "Hulpbronne",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Drukbaar: Gemeenskapshelper Flitskaarte (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Drukbaar: Eenvoudige Dankiekaartjie Sjabloon (PDF)</a></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-user-friends mr-2 text-yellow-500"></i> Materiale: Aantrekklere (hoede, baadjies), speelgoedgereedskap (stetoskoop, slang, wysstok), papier, kryte, versieringsmateriaal.</span></li>`,
+                            storyTimeTitle: "Storietyd",
+                            storyTitle: "Wie se Hande is Hierdie? 'n Gemeenskapshelper Raaiselboek deur Miranda Paul",
+                            storyTeaser: "'n Boek wat die werk van verskillende hande in die gemeenskap vier deur innemende raaisels. Perfek vir raaispeletjies en bespreking.",
+                            readFullStory: "Vind 'Wie se Hande is Hierdie?'",
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika."
+                        }
+                    },
+                    // Weeks 2, 3 for Month 2 - Placeholder content
+                    week2: { 
+                        en: { 
+                            weeklyThemeTitle: "Wonderful Weather", 
+                            lessonFocusTitle: "Sun, Rain, Wind, Clouds", 
+                            lessonFocusP1: "Exploring different weather types, how they feel, and what we wear or do in different weather. Introduction to basic weather vocabulary.", 
+                            lessonFocusObjectives: "<li>Identify sunny, rainy, and windy weather.</li><li>Describe what clothes to wear for different weather.</li><li>Participate in a simple weather chart activity.</li>", 
+                            activitiesTitle: "Activities", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Weather Dress-Up Doll</h3><p class="text-sm sm:text-base text-gray-700">Use a paper doll and cut-out clothes for different weather conditions.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Make a Rain Stick</h3><p class="text-sm sm:text-base text-gray-700">Create rain sounds using a cardboard tube, rice/beans, and nails/foil.</p></div>`, 
+                            resourcesTitle: "Resources", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Printable: Weather Chart Symbols (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-cloud-sun-rain mr-2 text-yellow-500'></i> Materials: Paper doll cutouts, fabric scraps, cardboard tubes, rice.</span></li>", 
+                            storyTimeTitle: "Story Time", 
+                            storyTitle: "The Little Cloud by Eric Carle", 
+                            storyTeaser: "A little cloud changes into different shapes, sparking imagination about what clouds can look like.", 
+                            readFullStory: "Find 'The Little Cloud'", 
+                            footerSlogan: "Empowering Early Childhood Development in South Africa." 
+                        }, 
+                        af: { 
+                            weeklyThemeTitle: "Wonderlike Weer", 
+                            lessonFocusTitle: "Son, Reën, Wind, Wolke", 
+                            lessonFocusP1: "Verkenning van verskillende weertipes, hoe dit voel, en wat ons dra of doen in verskillende weer. Inleiding tot basiese weerwoordeskat.", 
+                            lessonFocusObjectives: "<li>Identifiseer sonnige, reënerige en winderige weer.</li><li>Beskryf watter klere om vir verskillende weer te dra.</li><li>Neem deel aan 'n eenvoudige weerkaartaktiwiteit.</li>", 
+                            activitiesTitle: "Aktiwiteite", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Weer Aantrekpop</h3><p class="text-sm sm:text-base text-gray-700">Gebruik 'n papierpop en uitgeknipte klere vir verskillende weersomstandighede.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Maak 'n Reënstok</h3><p class="text-sm sm:text-base text-gray-700">Skep reëngeluide met 'n kartonbuis, rys/boontjies en spykers/foelie.</p></div>`, 
+                            resourcesTitle: "Hulpbronne", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Drukbaar: Weerkaart Simbole (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-cloud-sun-rain mr-2 text-yellow-500'></i> Materiale: Papierpop uitknipsels, materiaalstukkies, kartonbuise, rys.</span></li>", 
+                            storyTimeTitle: "Storietyd", 
+                            storyTitle: "Die Wolkie deur Eric Carle", 
+                            storyTeaser: "'n Klein wolkie verander in verskillende vorms, wat verbeelding prikkel oor hoe wolke kan lyk.", 
+                            readFullStory: "Vind 'Die Wolkie'", 
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika." 
+                        } 
+                    },
+                    week3: { 
+                        en: { 
+                            weeklyThemeTitle: "Plants Around Us", 
+                            lessonFocusTitle: "Growing Green: Seeds, Flowers, Trees", 
+                            lessonFocusP1: "Learning about different types of plants, parts of a plant, and what plants need to grow. Hands-on planting activity if possible.", 
+                            lessonFocusObjectives: "<li>Identify a flower, a leaf, and a tree.</li><li>Understand that plants need sun and water to grow.</li><li>Participate in planting a seed or caring for a plant.</li>", 
+                            activitiesTitle: "Activities", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Nature Walk & Collection</h3><p class="text-sm sm:text-base text-gray-700">Go on a walk to collect leaves, twigs, and flowers (if permissible). Discuss their findings.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Plant a Bean Seed</h3><p class="text-sm sm:text-base text-gray-700">Plant bean seeds in clear cups with damp cotton wool to observe germination.</p></div>`, 
+                            resourcesTitle: "Resources", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Printable: Parts of a Plant Diagram (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-seedling mr-2 text-yellow-500'></i> Materials: Bean seeds, clear plastic cups, cotton wool, small pots, soil.</span></li>", 
+                            storyTimeTitle: "Story Time", 
+                            storyTitle: "The Tiny Seed by Eric Carle", 
+                            storyTeaser: "Follows the journey of a tiny seed through the seasons as it grows into a giant flower.", 
+                            readFullStory: "Find 'The Tiny Seed'", 
+                            footerSlogan: "Empowering Early Childhood Development in South Africa." 
+                        }, 
+                        af: { 
+                            weeklyThemeTitle: "Plante Om Ons", 
+                            lessonFocusTitle: "Groei Groen: Sade, Blomme, Bome", 
+                            lessonFocusP1: "Leer oor verskillende soorte plante, dele van 'n plant, en wat plante nodig het om te groei. Praktiese plantaktiwiteit indien moontlik.", 
+                            lessonFocusObjectives: "<li>Identifiseer 'n blom, 'n blaar en 'n boom.</li><li>Verstaan dat plante son en water nodig het om te groei.</li><li>Neem deel aan die plant van 'n saadjie of die versorging van 'n plant.</li>", 
+                            activitiesTitle: "Aktiwiteite", 
+                            activitiesList: `<div><h3 class="text-md sm:text-lg font-medium text-gray-800">1. Natuurstap & Versameling</h3><p class="text-sm sm:text-base text-gray-700">Gaan stap om blare, takkies en blomme te versamel (indien toelaatbaar). Bespreek hul bevindinge.</p></div><div><h3 class="text-md sm:text-lg font-medium text-gray-800">2. Plant 'n Boontjiesaad</h3><p class="text-sm sm:text-base text-gray-700">Plant boontjiesade in deursigtige koppies met klam watte om ontkieming waar te neem.</p></div>`, 
+                            resourcesTitle: "Hulpbronne", 
+                            resourcesList: "<li><a href='#' class='text-blue-600 hover:underline flex items-center' download><i class='fas fa-file-pdf mr-2 text-red-500'></i> Drukbaar: Dele van 'n Plant Diagram (PDF)</a></li><li><span class='text-gray-700 flex items-center'><i class='fas fa-seedling mr-2 text-yellow-500'></i> Materiale: Boontjiesade, deursigtige plastiekkoppies, watte, klein potjies, grond.</span></li>", 
+                            storyTimeTitle: "Storietyd", 
+                            storyTitle: "Die Saadjie deur Eric Carle", 
+                            storyTeaser: "Volg die reis van 'n klein saadjie deur die seisoene soos dit in 'n reuseblom groei.", 
+                            readFullStory: "Vind 'Die Saadjie'", 
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika." 
+                        } 
+                    },
+                    week4: { // This is the original "Our Amazing Animals" theme, now Month 2 Week 4
+                        en: {
+                            weeklyThemeTitle: "Animals, Animals Everywhere!",
+                            lessonFocusTitle: "Lesson Focus: Exploring the Animal Kingdom",
+                            lessonFocusP1: "This week, children will explore different types of animals (farm, jungle, pets), their sounds, and where they live. We will focus on developing vocabulary related to animals, observational skills, and an appreciation for nature and animal care.",
+                            lessonFocusObjectives: `<li>Identify at least three common farm animals and three jungle animals.</li>
+                                                <li>Mimic animal sounds and movements for several animals.</li>
+                                                <li>Understand basic animal habitats (e.g., farm, jungle, home for pets).</li>
+                                                <li>Develop fine motor skills through animal-themed crafts.</li>`,
+                            activitiesTitle: "Activities",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. Animal Sound Charades & Movement Game</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Children take turns picking an animal card (teacher to prepare with pictures of various animals) and making its sound or acting out its movement for others to guess. Encourage full body movement.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. Farm Animal Collage / Jungle Diorama</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Provide cutouts of farm animals (or jungle animals), glue, paper, and craft supplies (cotton balls for sheep, green paper for grass/trees). Children create their own farm scene or jungle diorama in a shoebox. Discuss the animals and their environment as they work.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. "Where Do I Live?" Sorting Game</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Prepare pictures of animals and different habitats (farm, jungle, ocean, home). Children sort the animals into their correct homes on a large chart or designated areas on the floor.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">4. Make Animal Masks</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Use paper plates, construction paper, yarn, and other craft supplies for children to create masks of their favorite animals. They can then use these for imaginative play.</p>
+                                            </div>`,
+                            resourcesTitle: "Resources",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Printable: Animal Picture Cards (for charades/sorting) (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Printable: Animal Colouring Pages (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-audio mr-2 text-purple-500"></i> Audio: "Old MacDonald Had a Farm" Song & other animal songs (MP3)</a></li>
+                                            <li><div class="text-gray-700 flex items-center">
+                                                <i class="fas fa-video mr-2 text-green-500"></i>
+                                                <div>
+                                                    <span>Video: Short Introduction to Jungle Animals (Link to age-appropriate video)</span>
+                                                    <div class="aspect-w-16 mt-1 bg-gray-300 rounded flex items-center justify-center text-gray-500">
+                                                        <div>(Video Player Placeholder)</div>
+                                                    </div>
+                                                </div>
+                                            </div></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-palette mr-2 text-yellow-500"></i> Materials: Paper plates, construction paper, yarn, glue, scissors, crayons, shoeboxes (optional for diorama).</span></li>`,
+                            storyTimeTitle: "Story Time",
+                            storyTitle: "Brown Bear, Brown Bear, What Do You See? by Bill Martin Jr. & Eric Carle",
+                            storyTeaser: "A classic repetitive story that introduces various animals and colors. Excellent for language development, prediction, and participation. (Teacher to narrate).",
+                            readFullStory: "Find 'Brown Bear, Brown Bear' resources",
+                            footerSlogan: "Empowering Early Childhood Development in South Africa."
+                        },
+                        af: {
+                            weeklyThemeTitle: "Diere, Diere Oral!",
+                            lessonFocusTitle: "Leerfokus: Verkenning van die Diereryk",
+                            lessonFocusP1: "Hierdie week sal kinders verskillende soorte diere (plaas, oerwoud, troeteldiere), hul geluide en waar hulle woon, verken. Ons sal fokus op die ontwikkeling van woordeskat wat verband hou met diere, waarnemingsvaardighede, en 'n waardering vir die natuur en dieresorg.",
+                            lessonFocusObjectives: `<li>Identifiseer ten minste drie algemene plaasdiere en drie oerwouddiere.</li>
+                                                <li>Boots dieregeluide en -bewegings vir verskeie diere na.</li>
+                                                <li>Verstaan basiese dierehabitats (bv. plaas, oerwoud, huis vir troeteldiere).</li>
+                                                <li>Ontwikkel fynmotoriese vaardighede deur diere-tema handwerk.</li>`,
+                            activitiesTitle: "Aktiwiteite",
+                            activitiesList: `<div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">1. Dieregeluide Charades & Bewegingspeletjie</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Kinders maak beurte om 'n dierekaartjie (onderwyser moet voorberei met prente van verskeie diere) te kies en die geluid daarvan te maak of die beweging daarvan uit te beeld sodat ander kan raai. Moedig vollyfbeweging aan.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">2. Plaasdiere Collage / Oerwoud Diorama</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Voorsien uitknipsels van plaasdiere (of oerwouddiere), gom, papier en handwerkmateriaal (katoenballetjies vir skape, groen papier vir gras/bome). Kinders skep hul eie plaastoneel of oerwouddiorama in 'n skoenboks. Bespreek die diere en hul omgewing terwyl hulle werk.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">3. "Waar Woon Ek?" Sorteerspeletjie</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Berei prente van diere en verskillende habitatte (plaas, oerwoud, oseaan, huis) voor. Kinders sorteer die diere in hul korrekte huise op 'n groot kaart of aangewese areas op die vloer.</p>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-md sm:text-lg font-medium text-gray-800">4. Maak Dieremaskers</h3>
+                                                <p class="text-sm sm:text-base text-gray-700">Gebruik papierborde, konstruksiepapier, wol en ander handwerkmateriaal vir kinders om maskers van hul gunstelingdiere te skep. Hulle kan dit dan vir verbeeldingryke spel gebruik.</p>
+                                            </div>`,
+                            resourcesTitle: "Hulpbronne",
+                            resourcesList: `<li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Drukbaar: Diere Prentkaarte (vir charades/sortering) (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-pdf mr-2 text-red-500"></i> Drukbaar: Diere Kleurbladsye (PDF)</a></li>
+                                            <li><a href="#" class="text-blue-600 hover:underline flex items-center" download><i class="fas fa-file-audio mr-2 text-purple-500"></i> Oudio: "Ou MacDonald Het 'n Plaas" Liedjie & ander diereliedjies (MP3)</a></li>
+                                            <li><div class="text-gray-700 flex items-center">
+                                                <i class="fas fa-video mr-2 text-green-500"></i>
+                                                <div>
+                                                    <span>Video: Kort Inleiding tot Oerwouddiere (Skakel na ouderdomsgepaste video)</span>
+                                                     <div class="aspect-w-16 mt-1 bg-gray-300 rounded flex items-center justify-center text-gray-500">
+                                                        <div>(Videospeler Plekhouer)</div>
+                                                    </div>
+                                                </div>
+                                            </div></li>
+                                            <li><span class="text-gray-700 flex items-center"><i class="fas fa-palette mr-2 text-yellow-500"></i> Materiale: Papierborde, konstruksiepapier, wol, gom, skêr, kryte, skoenbokse (opsioneel vir diorama).</span></li>`,
+                            storyTimeTitle: "Storietyd",
+                            storyTitle: "Bruin Beer, Bruin Beer, Wat Sien Jy Daar? deur Bill Martin Jr. & Eric Carle",
+                            storyTeaser: "'n Klassieke herhalende storie wat verskeie diere en kleure bekendstel. Uitstekend vir taalontwikkeling, voorspelling en deelname. (Onderwyser vertel).",
+                            readFullStory: "Vind 'Bruin Beer, Bruin Beer' hulpbronne",
+                            footerSlogan: "Bemagtiging van Vroeëkinderontwikkeling in Suid-Afrika."
+                        }
+                    }
+                }
+            }
+        };
+
+        // --- APPLICATION LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Element References
+            const monthSelector = document.getElementById('monthSelector');
+            const weekSelector = document.getElementById('weekSelector');
+            const languageSelectorContainer = document.getElementById('languageSelectorContainer');
+            const tabContainer = document.getElementById('tabContainer');
+            const currentSelectionDisplay = document.getElementById('currentSelectionDisplay');
+            const weeklyThemeTitleEl = document.getElementById('weeklyThemeTitle');
+
+            // Application State
+            let currentLang = 'en'; // Default language
+            let currentMonthKey = 'month1';
+            let currentWeekKey = 'week1';
+
+            // Populate Month Selector
+            function populateMonthSelector() {
+                monthSelector.innerHTML = ''; // Clear existing options
+                for (const monthKey in siteContent) {
+                    const option = document.createElement('option');
+                    option.value = monthKey;
+                    option.textContent = siteContent[monthKey].title[currentLang] || siteContent[monthKey].title['en'];
+                    monthSelector.appendChild(option);
+                }
+                monthSelector.value = currentMonthKey; // Set current month
+            }
+
+            // Populate Week Selector based on selected month and current language
+            function populateWeekSelector() {
+                weekSelector.innerHTML = ''; // Clear existing options
+                const weeks = siteContent[currentMonthKey].weeks;
+                for (const weekKey in weeks) {
+                    const option = document.createElement('option');
+                    option.value = weekKey;
+                    const weekData = weeks[weekKey][currentLang] || weeks[weekKey]['en'];
+                    // Extracting a more concise title for the dropdown if possible
+                    let weekDisplayTitle = `Week ${weekKey.replace('week','')}`;
+                    if (weekData.weeklyThemeTitle) {
+                        const titleParts = weekData.weeklyThemeTitle.split(':');
+                        weekDisplayTitle = titleParts.length > 1 ? titleParts[1].trim() : titleParts[0].trim();
+                         if (weekDisplayTitle.length > 25) { // Keep it short
+                            weekDisplayTitle = weekDisplayTitle.substring(0,22) + "...";
+                        }
+                    }
+                    option.textContent = weekDisplayTitle;
+                    weekSelector.appendChild(option);
+                }
+                weekSelector.value = currentWeekKey; // Set current week
+            }
+            
+            // Update and display current selection information
+            function updateCurrentSelectionDisplay() {
+                const monthTitle = siteContent[currentMonthKey].title[currentLang] || siteContent[currentMonthKey].title['en'];
+                const weekData = siteContent[currentMonthKey].weeks[currentWeekKey][currentLang] || siteContent[currentMonthKey].weeks[currentWeekKey]['en'];
+                const weekTitle = weekData.weeklyThemeTitle || "Selected Week";
+                currentSelectionDisplay.textContent = `${monthTitle} - ${weekTitle}`;
+            }
+
+            // Load content into the respective sections based on selections
+            function loadContent() {
+                const content = siteContent[currentMonthKey]?.weeks[currentWeekKey]?.[currentLang];
+                const fallbackContent = siteContent[currentMonthKey]?.weeks[currentWeekKey]?.['en']; // Fallback to English
+
+                if (!content && !fallbackContent) {
+                    console.error(`Content not found for ${currentMonthKey}, ${currentWeekKey}, ${currentLang}`);
+                    weeklyThemeTitleEl.textContent = "Content not available";
+                    document.querySelectorAll('[data-lang-key]').forEach(el => el.innerHTML = ''); // Clear all content fields
+                    return;
+                }
+                
+                const currentContent = content || fallbackContent; // Use selected lang or fallback
+
+                weeklyThemeTitleEl.textContent = currentContent.weeklyThemeTitle || "Untitled Week";
+
+                // Iterate over elements with data-lang-key and populate them
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (currentContent[key] !== undefined) { // Check if key exists
+                        // For list-like content or content that might contain HTML, set innerHTML
+                        if (key === 'lessonFocusObjectives' || key === 'activitiesList' || key === 'resourcesList') {
+                            el.innerHTML = currentContent[key]; 
+                        } else { // For simple text content
+                            el.textContent = currentContent[key];
+                        }
+                    } else {
+                        el.innerHTML = ''; // Clear if key not found in currentContent
+                        console.warn(`Key "${key}" not found in content for ${currentMonthKey}, ${currentWeekKey}, ${currentLang}`);
+                    }
+                });
+                updateCurrentSelectionDisplay();
+            }
+
+            // Event Listeners
+            monthSelector.addEventListener('change', (event) => {
+                currentMonthKey = event.target.value;
+                currentWeekKey = Object.keys(siteContent[currentMonthKey].weeks)[0]; // Default to first week of new month
+                populateWeekSelector(); // This will also set weekSelector.value
+                loadContent();
+            });
+
+            weekSelector.addEventListener('change', (event) => {
+                currentWeekKey = event.target.value;
+                loadContent();
+            });
+
+            languageSelectorContainer.addEventListener('click', (event) => {
+                if (event.target.matches('button[data-lang]')) {
+                    currentLang = event.target.dataset.lang;
+                    // Update active button style
+                    languageSelectorContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active-lang'));
+                    event.target.classList.add('active-lang');
+                    
+                    // Refresh selectors and content for the new language
+                    populateMonthSelector(); 
+                    populateWeekSelector(); 
+                    loadContent();
+                }
+            });
+
+            // Tab functionality
+            if (tabContainer) {
+                tabContainer.addEventListener('click', (event) => {
+                    if (event.target.matches('.tab-button')) {
+                        const targetTab = event.target.dataset.tab;
+                        // Update active tab style
+                        tabContainer.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+                        event.target.classList.add('active');
+                        // Show/hide tab panes
+                        document.querySelectorAll('.tab-pane').forEach(pane => {
+                            pane.classList.add('hidden');
+                            if (pane.id === `${targetTab}Content`) {
+                                pane.classList.remove('hidden');
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Initial Page Load Setup
+            function initializePage() {
+                populateMonthSelector();
+                populateWeekSelector();
+                loadContent();
+                document.getElementById('currentYear').textContent = new Date().getFullYear();
+            }
+
+            initializePage(); // Call on DOMContentLoaded
+        });
+    </script>
+</body>
+</html>
