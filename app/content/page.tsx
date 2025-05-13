@@ -1,8 +1,8 @@
-'use client';
+'use client'; // ✅ This tells Next.js to treat this as a Client Component
 
-import * as React from 'react';
+import React from 'react';
 
-export default function ContentPage(): JSX.Element {
+export default function ContentPage() {
   return (
     <main className="p-8">
       <h1 className="text-3xl font-bold">Educational Content</h1>
