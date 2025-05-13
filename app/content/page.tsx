@@ -1,14 +1,12 @@
-'use client';
+'use client'; // ✅ This tells Next.js to treat this as a Client Component
 
 import React from 'react';
 
-const ContentPage = () => {
+export default function ContentPage() {
   return (
     <main className="p-8">
       <h1 className="text-3xl font-bold">Educational Content</h1>
       <p className="mt-2">This is the content page.</p>
     </main>
   );
-};
-
-export default ContentPage;
+}
