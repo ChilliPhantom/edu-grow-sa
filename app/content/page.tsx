@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-export default function ContentPage() {
+export default function ContentPage(): JSX.Element {
   return (
     <main className="p-8">
       <h1 className="text-3xl font-bold">Educational Content</h1>
