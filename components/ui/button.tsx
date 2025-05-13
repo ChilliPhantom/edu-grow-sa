@@ -1,18 +1,15 @@
 'use client';
 
-import * as React from 'react';
+import Button from '@/components/ui/button';
+import Card from '@/components/ui/card';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
-
-const Button: React.FC<ButtonProps> = ({ children, ...props }) => {
+export default function ContentPage() {
   return (
-    <button
-      {...props}
-      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-    >
-      {children}
-    </button>
+    <main className="p-8">
+      <Card>
+        <h1 className="text-3xl font-bold">Educational Content</h1>
+        <Button>Click Me</Button>
+      </Card>
+    </main>
   );
-};
-
-export default Button;
+}
