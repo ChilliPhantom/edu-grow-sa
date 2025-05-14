@@ -1,11 +1,14 @@
 'use client';
 
-import React from 'react';
+import { Card } from '@/components/ui/card'; // Make sure the path and export match
 
-export function Card({ children }: { children: React.ReactNode }) {
+export default function ContentPage() {
   return (
-    <div className="rounded-lg border p-4 shadow bg-white">
-      {children}
-    </div>
+    <main className="p-8">
+      <h1 className="text-3xl font-bold">Educational Content</h1>
+      <Card>
+        <p>This content is wrapped inside a styled Card component.</p>
+      </Card>
+    </main>
   );
 }
