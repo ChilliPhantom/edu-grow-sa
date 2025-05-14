@@ -1,10 +1,11 @@
 'use client';
 
-export default function ContentPage() {
+import React from 'react';
+
+export function Card({ children }: { children: React.ReactNode }) {
   return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold">Educational Content</h1>
-      <p>This is the content page. Card component removed to fix build.</p>
-    </main>
+    <div className="rounded-lg border p-4 shadow bg-white">
+      {children}
+    </div>
   );
 }
