@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/us/card'; // or use relative path if needed
+import { Card } from '@/components/ui/card'; // or use relative path if needed
 
 export default function ContentPage() {
   return (
