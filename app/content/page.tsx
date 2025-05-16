@@ -1,8 +1,10 @@
 'use client';
 
-import { Card } from '@/components/ui/card'; // Adjust path if needed
+import dynamic from 'next/dynamic';
 
-console.log('Card component:', Card); // 👈 Add this line here
+const Card = dynamic(() => import('@/components/ui/card').then(mod => mod.Card), {
+  ssr: false,
+});
 
 export default function ContentPage() {
   return (
