@@ -1,6 +1,8 @@
 'use client';
 
-import { Card } from '@/components/ui/card'; // Make sure path is correct
+import { Card } from '@/components/ui/card'; // Adjust path if needed
+
+console.log('Card component:', Card); // 👈 Add this line here
 
 export default function ContentPage() {
   return (
